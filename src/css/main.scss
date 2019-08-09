@@ -1,0 +1,45 @@
+@import "./variables.scss";
+
+h2 {
+	color: $white !important;
+}
+
+body {
+	margin: 0;
+	height: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-color: $primary;
+}
+
+/* Semantic Overrides */
+
+.page-content {
+	margin-top: 5em !important;
+
+	@media only screen and (max-width: 767px) {
+		margin-top: 1.5em !important;
+	}
+
+	> * {
+		margin: auto !important;
+		@media only screen and (min-width: 767px) {
+			max-width: 500px !important;
+			margin-top: 200px !important;
+		}
+	}
+}
+
+.ui.menu .active.item {
+	color: $primary;
+}
+
+@media only screen and (max-width: 767px) {
+	.ui.modal .content > .image {
+		margin-right: 1em !important;
+	}
+}
+
+.sidebar-navigation {
+	margin-top: 3.2em !important;
+}
