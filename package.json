@@ -15,13 +15,15 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "semantic-ui-react": "^0.87.2",
+    "source-map-explorer": "^2.0.1",
     "web3-react": "^5.0.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"
