@@ -4,7 +4,7 @@ import React from "react";
 import Background from "./components/Background.js";
 import Navigation from "./components/NavBar.js";
 import Home from "./components/Home.js";
-import HowItWorks from "./components/HowItWorks.js";
+/* import HowItWorks from "./components/HowItWorks.js"; */
 import Docs from "./components/Docs.js";
 
 import { Router, Route } from "react-router-dom";

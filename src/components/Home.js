@@ -14,6 +14,8 @@ import Content from "./Content.js";
 import ModalAboutPEG from "./ModalAboutPEG.js";
 import ModalTransaction from "./ModalTransaction.js";
 
+import { Web3Consumer } from "web3-react";
+
 export default class Home extends Component {
 	constructor(props) {
 		super(props);
@@ -21,7 +23,8 @@ export default class Home extends Component {
 			ethVal: 1,
 			usdVal: 12315,
 			conversion: -1,
-			transactionActive: true
+			transactionActive: false,
+			isToPEG: true
 		};
 		fetch(
 			"https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD&api_key=5617820d3ec69aedb8b334b97dd61d4f19cfc097b5a7ce37fc870c6419cc8bba"
@@ -110,6 +113,14 @@ export default class Home extends Component {
 							</Button.Group>
 							<Divider />
 
+							<Web3Consumer>
+								{context => {
+									context.setFirstValidConnector(["Infura"]);
+									return (
+										<p>{`Connected with ${context.connectorName}`}</p>
+									);
+								}}
+							</Web3Consumer>
 							<ModalAboutPEG />
 							{transactionActive && (
 								<ModalTransaction
@@ -126,4 +137,3 @@ export default class Home extends Component {
 		);
 	}
 }
-

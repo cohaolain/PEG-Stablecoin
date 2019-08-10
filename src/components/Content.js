@@ -2,8 +2,6 @@ import React, { Component } from "react";
 
 import { Transition, Container } from "semantic-ui-react";
 
-import { isBrowser } from "react-device-detect";
-
 export default class Home extends Component {
 	constructor(props) {
 		super(props);
