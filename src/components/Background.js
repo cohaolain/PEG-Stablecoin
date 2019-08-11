@@ -53,9 +53,9 @@ export default class Background extends Component {
 				},
 				line_linked: {
 					enable: true,
-					distance: 50,
+					distance: 80,
 					color: "#ffffff",
-					opacity: 0.4,
+					opacity: 0.6,
 					width: 1
 				},
 				move: {

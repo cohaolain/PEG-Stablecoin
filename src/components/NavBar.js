@@ -42,7 +42,7 @@ export default class Navigation extends Component {
 					name="How It Works"
 					active={activeItem === "How It Works"}
 					onClick={this.handleItemClick}
-				/> */}
+				/> 
 				<Menu.Item
 					as={Link}
 					to="/docs"
@@ -50,6 +50,7 @@ export default class Navigation extends Component {
 					active={activeItem === "API Docs"}
 					onClick={this.handleItemClick}
 				/>
+				*/}
 			</>
 		);
 		const smartContract = (
@@ -70,12 +71,12 @@ export default class Navigation extends Component {
 					<Menu fixed="top" size="huge">
 						{navigationItems}
 						<Menu.Menu position="right">
-							<Menu.Item>
+							{/* <Menu.Item>
 								<Input
 									icon="search"
 									placeholder="Search the docs..."
 								/>
-							</Menu.Item>
+							</Menu.Item> */}
 							{smartContract}
 						</Menu.Menu>
 					</Menu>

@@ -17,7 +17,7 @@ import ReactGA from "react-ga";
 const { InjectedConnector, NetworkOnlyConnector } = Connectors;
 const MetaMask = new InjectedConnector();
 const Infura = new NetworkOnlyConnector({
-	providerURL: "https://mainnet.infura.io/v3/0ca94e8a1ec148038d7461f23bd460fa"
+	providerURL: "https://ropsten.infura.io/v3/0ca94e8a1ec148038d7461f23bd460fa"
 });
 
 const connectors = { MetaMask, Infura };

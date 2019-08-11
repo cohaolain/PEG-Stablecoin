@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "ethers": "^4.0.31",
+    "ethers": "^4.0.33",
     "local-web-server": "^3.0.7",
     "node-sass": "^4.12.0",
     "react": "^16.8.6",

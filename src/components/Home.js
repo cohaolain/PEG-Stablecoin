@@ -16,12 +16,14 @@ import ModalTransaction from "./ModalTransaction.js";
 
 import { Web3Consumer } from "web3-react";
 
+import { ethers } from "ethers";
+
 export default class Home extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			ethVal: 1,
-			usdVal: 12315,
+			valPEG: 1,
 			conversion: -1,
 			transactionActive: false,
 			isToPEG: true
@@ -32,37 +34,24 @@ export default class Home extends Component {
 			.then(response => response.json())
 			.then(json => {
 				this.setState({ conversion: json.USD });
-				this.setState({ usdVal: this.state.conversion });
+				this.setState({ valPEG: this.state.conversion });
 			});
 	}
 
-	componentDidMount() {}
-
 	onUpdateETH = x => {
 		this.setState({
-			usdVal: x.target.value * this.state.conversion,
-			ethVal: x.target.value
+			valPEG:
+				Math.round(x.target.value * this.state.conversion * 100) / 100,
+			ethVal: Math.round(x.target.value * 10000) / 10000
 		});
 	};
 
 	onUpdateUSD = x => {
 		this.setState({
-			usdVal: x.target.value,
-			ethVal: x.target.value / this.state.conversion
-		});
-	};
-
-	initToPEG = () => {
-		this.setState({
-			transactionActive: true,
-			isToPEG: true
-		});
-	};
-
-	initToETH = () => {
-		this.setState({
-			transactionActive: true,
-			isToPEG: false
+			valPEG: Math.round(x.target.value * 100) / 100,
+			ethVal:
+				Math.round((x.target.value * 10000) / this.state.conversion) /
+				10000
 		});
 	};
 
@@ -73,7 +62,7 @@ export default class Home extends Component {
 	};
 
 	render() {
-		const { ethVal, usdVal, transactionActive, isToPEG } = this.state;
+		const { ethVal, valPEG, transactionActive, isToPEG } = this.state;
 		return (
 			<Content>
 				<Grid centered verticalAlign="middle" className="home-content">
@@ -82,55 +71,110 @@ export default class Home extends Component {
 							<Icon name="ethereum" />
 							Welcome to PEG Stablecoin
 						</Header>
-						<Segment>
-							<p>What would you like to do?</p>
-							<Form>
-								<Form.Group widths="equal">
-									<Form.Input
-										label="Amount of ETH"
-										type="number"
-										value={
-											Math.round(ethVal * 10000) / 10000
-										}
-										onInput={this.onUpdateETH}
-									/>
-									<Form.Input
-										label="Amount of PEG"
-										type="number"
-										value={Math.round(usdVal * 100) / 100}
-										onInput={this.onUpdateUSD}
-									/>
-								</Form.Group>
-							</Form>
-							<Button.Group>
-								<Button onClick={this.initToPEG} positive>
-									ETH to PEG
-								</Button>
-								<Button.Or />
-								<Button onClick={this.initToETH} negative>
-									PEG to ETH
-								</Button>
-							</Button.Group>
-							<Divider />
-
-							<Web3Consumer>
-								{context => {
+						<Web3Consumer>
+							{context => {
+								if (!context.active) {
 									context.setFirstValidConnector(["Infura"]);
-									return (
-										<p>{`Connected with ${context.connectorName}`}</p>
-									);
-								}}
-							</Web3Consumer>
-							<ModalAboutPEG />
-							{transactionActive && (
-								<ModalTransaction
-									usdVal={usdVal}
-									ethVal={ethVal}
-									isToPEG={isToPEG}
-									hide={this.hideTransationModal}
-								/>
-							)}
-						</Segment>
+								}
+								window.reth = context;
+								window.ethers = ethers;
+								return (
+									<Segment>
+										<p>What would you like to do?</p>
+										<Form>
+											<Form.Group widths="equal">
+												<Form.Input
+													min={0}
+													label="Amount of ETH"
+													type="number"
+													step={0.001}
+													value={
+														Math.round(
+															ethVal * 10000
+														) / 10000
+													}
+													onInput={this.onUpdateETH}
+												/>
+												<Form.Input
+													label="Amount of PEG"
+													type="number"
+													value={
+														Math.round(
+															valPEG * 100
+														) / 100
+													}
+													onInput={this.onUpdateUSD}
+												/>
+											</Form.Group>
+										</Form>
+										<Button.Group>
+											<Button
+												onClick={() => {
+													this.setState({
+														transactionActive: true,
+														isToPEG: true
+													});
+													if (
+														context.connectorName !==
+														"MetaMask"
+													) {
+														context.unsetConnector();
+													}
+												}}
+												positive
+											>
+												ETH to PEG
+											</Button>
+											<Button.Or />
+											<Button
+												onClick={() => {
+													this.setState({
+														transactionActive: true,
+														isToPEG: false
+													});
+													if (
+														context.connectorName !==
+														"MetaMask"
+													) {
+														context.unsetConnector();
+													}
+												}}
+												negative
+											>
+												PEG to ETH
+											</Button>
+										</Button.Group>
+										<Segment.Group>
+											<Segment
+												color="green"
+												loading={!context.active}
+											>
+												{`${
+													context.connectorName
+														? "Connected with " +
+														  (context.connectorName ===
+														  "MetaMask"
+																? "an Injected Web3 Provider"
+																: "Infura")
+														: "Connecting to blockchain..."
+												} `}
+												<Icon name="check" />
+											</Segment>
+										</Segment.Group>
+										<Divider />
+										<ModalAboutPEG />
+										{transactionActive && (
+											<ModalTransaction
+												valPEG={valPEG}
+												ethVal={ethVal}
+												isToPEG={isToPEG}
+												hide={this.hideTransationModal}
+											/>
+										)}
+									</Segment>
+								);
+							}}
+						</Web3Consumer>
 					</Grid.Column>
 				</Grid>
 			</Content>

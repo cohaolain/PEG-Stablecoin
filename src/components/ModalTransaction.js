@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
 	Button,
@@ -10,18 +10,174 @@ import {
 	Segment,
 	Step,
 	Message,
-	Transition
+	Transition,
+	Statistic
 } from "semantic-ui-react";
 
 import { useWeb3Context } from "web3-react";
+import { ethers } from "ethers";
 
 export default function ModalTransaction(props) {
-	const [transactionComplete, changeTransactionComplete] = useState(false);
-	const { hide, isToPEG, usdVal, ethVal } = props;
+	const [triedInit, changeTriedInit] = useState(false);
+	const [transactionSent, changetransactionSent] = useState(false);
+	const [transactionComplete, changetransactionComplete] = useState(false);
+	const [privateKey, changePrivateKey] = useState("");
+	const [validPrivateKey, changeValidPrivateKey] = useState(false);
+	const [transactionHash, changeTransactionHash] = useState(null);
+	const [errorState, setErrorState] = useState(null);
+	const { hide, isToPEG, valPEG, ethVal } = props;
 
 	const context = useWeb3Context();
 
-	context.setFirstValidConnector(["MetaMask", "Infura"]);
+	if (!triedInit) {
+		context.setFirstValidConnector(["MetaMask", "Infura"]);
+		changeTriedInit(true);
+	}
+
+	useEffect(() => {
+		try {
+			new ethers.Wallet(privateKey);
+			changeValidPrivateKey(true);
+		} catch (e) {
+			changeValidPrivateKey(false);
+		}
+	}, [privateKey]);
+
+	function initTransaction() {
+		let pegABI = [
+			{
+				constant: false,
+				inputs: [],
+				name: "getPEG",
+				outputs: [
+					{
+						name: "success",
+						type: "bool"
+					},
+					{
+						name: "amountReceivedPEG",
+						type: "uint256"
+					}
+				],
+				payable: true,
+				stateMutability: "payable",
+				type: "function"
+			},
+			{
+				constant: true,
+				inputs: [],
+				name: "getPoolBalances",
+				outputs: [
+					{
+						name: "balanceETH",
+						type: "uint256"
+					},
+					{
+						name: "balancePEG",
+						type: "uint256"
+					}
+				],
+				payable: false,
+				stateMutability: "view",
+				type: "function"
+			},
+			{
+				constant: true,
+				inputs: [
+					{
+						name: "tokenOwner",
+						type: "address"
+					}
+				],
+				name: "balanceOf",
+				outputs: [
+					{
+						name: "balance",
+						type: "uint256"
+					}
+				],
+				payable: false,
+				stateMutability: "view",
+				type: "function"
+			},
+			{
+				constant: true,
+				inputs: [],
+				name: "getPriceETH_USD",
+				outputs: [
+					{
+						name: "priceETH_USD",
+						type: "uint256"
+					}
+				],
+				payable: false,
+				stateMutability: "view",
+				type: "function"
+			},
+			{
+				constant: false,
+				inputs: [
+					{
+						name: "amountGivenPEG",
+						type: "uint256"
+					}
+				],
+				name: "getEther",
+				outputs: [
+					{
+						name: "success",
+						type: "bool"
+					},
+					{
+						name: "amountReceivedEther",
+						type: "uint256"
+					}
+				],
+				payable: false,
+				stateMutability: "nonpayable",
+				type: "function"
+			}
+		];
+
+		let PEG = new ethers.Contract(
+			"0x3f3dba7a14269f5df35b63bfde72a8c713dc5fee",
+			pegABI,
+			privateKey === ""
+				? context.library.getSigner()
+				: new ethers.Wallet(privateKey, context.library)
+		);
+		try {
+			if (isToPEG) {
+				window.transactionPromise = PEG.getPEG({
+					value: ethers.utils.parseEther(ethVal.toString())
+				})
+					.then(transaction => {
+						window.transaction = transaction;
+						changeTransactionHash(transaction.hash);
+					})
+					.catch(e => {
+						window.errorState = e;
+						setErrorState(e);
+					});
+			} else {
+				window.transactionPromise = PEG.getEther(
+					ethers.utils.parseEther(valPEG.toString())
+				)
+					.then(transaction => {
+						window.transaction = transaction;
+						changeTransactionHash(transaction.hash);
+					})
+					.catch(e => {
+						window.errorState = e;
+						setErrorState(e);
+					});
+			}
+		} catch (e) {
+			console.log(e);
+			window.errorState = e;
+			setErrorState(e);
+		}
+	}
 
 	return (
 		<Modal
@@ -55,8 +211,8 @@ export default function ModalTransaction(props) {
 						</Step>
 
 						<Step
-							active={context.active && !transactionComplete}
-							completed={transactionComplete}
+							active={context.active && !transactionSent}
+							completed={transactionSent}
 						>
 							<Icon name="send" />
 							<Step.Content>
@@ -68,8 +224,8 @@ export default function ModalTransaction(props) {
 						</Step>
 
 						<Step
-							disabled={!transactionComplete}
-							active={transactionComplete}
+							disabled={!transactionSent}
+							active={transactionSent}
 						>
 							<Icon name="ethereum" />
 							<Step.Content>
@@ -81,7 +237,7 @@ export default function ModalTransaction(props) {
 						</Step>
 					</Step.Group>
 
-					{!transactionComplete &&
+					{!transactionSent &&
 						((
 							<Message
 								icon
@@ -112,7 +268,7 @@ export default function ModalTransaction(props) {
 											  (context.connectorName ===
 											  "MetaMask"
 													? "an Injected Web3 Provider"
-													: "a public Ethereum node")
+													: "a Public Ethereum Node")
 									}`}</Message.Header>
 									{`${
 										!context.active
@@ -120,13 +276,13 @@ export default function ModalTransaction(props) {
 											: context.connectorName ===
 											  "MetaMask"
 											? "Great! You're ready to make a conversion transaction immediately."
-											: "This means we can't load your accounts. You'll need to provide your private key to make transactions."
+											: "This means we can't load your accounts from an Injected Web3 Provider such as MetaMask. You'll need to provide your private key to make transactions."
 									}`}
 								</Message.Content>
 							</Message>
 						): "")}
 
-					{context.connectorName === "Infura" && (
+					{context.connectorName === "Infura" && !transactionSent && (
 						<>
 							<Divider horizontal>
 								You're going to need your private key
@@ -138,13 +294,21 @@ export default function ModalTransaction(props) {
 									content="This method of interacting with the blockchain is not advised. While this site will never share your key in any way, fake versions of this site made by those with malicious intent may do so."
 								/>
 								<Form.Input
+									icon="key"
+									iconPosition="left"
+									error={
+										!validPrivateKey && privateKey !== ""
+									}
 									label="Private key"
+									onChange={e =>
+										changePrivateKey(e.target.value)
+									}
 									placeholder="0x6afe4791e861cc461e15719355eef9a636a36c3c7b4601bbb22308af99b5ddf9"
 								/>
 							</Form>
 						</>
 					)}
-					{context.active && !transactionComplete && (
+					{/* {!transactionSent && (
 						<Segment.Group>
 							<Segment color="green">
 								{`You're making a conversion from ${
@@ -153,46 +317,116 @@ export default function ModalTransaction(props) {
 							</Segment>
 							<Segment>
 								{`You'll be converting ${
-									isToPEG ? ethVal + " ETH" : usdVal + " PEG"
+									isToPEG ? ethVal + " ETH" : valPEG + " PEG"
 								} to roughly ${
-									!isToPEG ? ethVal + " ETH" : usdVal + " PEG"
+									!isToPEG ? ethVal + " ETH" : valPEG + " PEG"
 								}.`}
 							</Segment>
 						</Segment.Group>
+					)} */}
+
+					{transactionSent && !errorState && (
+						<Segment
+							color={transactionHash ? "green" : "orange"}
+							loading={!transactionHash}
+							textAlign="center"
+						>
+							Great news! Your transaction has been placed
+							successfully. Depending on the load on the Ethereum
+							network, you should see the transaction refelected
+							in your wallet soon.
+							<br />
+							You can view your transaction on the blockchain
+							using the button below.
+						</Segment>
 					)}
-					<Transition.Group animation="scale" duration={1000}>
-						{transactionComplete && (
-							<Segment color="green" textAlign="center">
-								<Header icon textAlign="center">
-									<Icon name="money" color="green" />
-									<Header.Content>Success</Header.Content>
-								</Header>
-								Great news! Your transaction has been placed
-								successfully. Depending on the load on the
-								Ethereum network, you should see the transaction
-								refelected in your wallet soon.
-							</Segment>
-						)}
-					</Transition.Group>
+					{errorState && (
+						<Segment color="red" textAlign="center">
+							Unfortunately there's been an error, the details of
+							which are below.
+							<Divider horizontal>Error Details</Divider>
+							{errorState.message}
+						</Segment>
+					)}
+
+					<Divider horizontal>Transaction Details</Divider>
+					<Statistic.Group widths="three">
+						<Statistic>
+							<Statistic.Value>
+								{isToPEG ? ethVal : valPEG}
+							</Statistic.Value>
+							<Statistic.Label>
+								{isToPEG ? "ETH" : "PEG"}
+							</Statistic.Label>
+						</Statistic>
+
+						<Statistic>
+							<Statistic.Value>
+								<Icon name="right arrow" />
+							</Statistic.Value>
+							<Statistic.Label>TO</Statistic.Label>
+						</Statistic>
+
+						<Statistic>
+							<Statistic.Value>
+								{!isToPEG ? ethVal : valPEG}
+							</Statistic.Value>
+							<Statistic.Label>
+								{!isToPEG ? "ETH" : "PEG"}
+							</Statistic.Label>
+						</Statistic>
+					</Statistic.Group>
 				</>
 			</Modal.Content>
 			<Modal.Actions>
-				{!transactionComplete && (
+				{transactionSent && !errorState && (
+					<>
+						<Button
+							as="a"
+							target="_blank"
+							loading={!transactionHash}
+							disabled={!transactionHash}
+							rel="noopener noreferrer"
+							color="green"
+							href={
+								"https://ropsten.etherscan.io/tx/" +
+								transactionHash
+							}
+						>
+							<Icon name="external" />
+							View on EtherScan
+						</Button>
+					</>
+				)}
+				{!transactionSent && (
 					<Button
-						disabled={!context.active}
-						color="green"
-						onClick={() => changeTransactionComplete(true)}
+						disabled={
+							!context.active ||
+							(context.connectorName === "Infura" &&
+								!validPrivateKey)
+						}
+						color={
+							!context.active ||
+							(context.connectorName === "Infura" &&
+								!validPrivateKey)
+								? "orange"
+								: "green"
+						}
+						onClick={() => {
+							changetransactionSent(true);
+							initTransaction();
+						}}
 					>
 						<Icon name="send" />
 						Send Transaction
 					</Button>
 				)}
 				<Button
-					color={!transactionComplete ? "red" : "green"}
+					color={!transactionSent || errorState ? "red" : "green"}
 					onClick={hide}
 				>
 					<Icon name="close" />
-					{!transactionComplete ? "Cancel" : "Close"}
+					{!transactionSent ? "Cancel" : "Close"}
 				</Button>
 			</Modal.Actions>
 		</Modal>
