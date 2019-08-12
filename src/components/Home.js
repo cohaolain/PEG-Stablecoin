@@ -2,12 +2,14 @@ import React, { Component } from "react";
 
 import {
 	Button,
+	Container,
 	Grid,
 	Header,
 	Icon,
 	Segment,
 	Form,
-	Divider
+	Divider,
+	Statistic
 } from "semantic-ui-react";
 
 import Content from "./Content.js";
@@ -22,11 +24,13 @@ export default class Home extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			ethVal: 1,
+			valETH: 1,
 			valPEG: 1,
 			conversion: -1,
 			transactionActive: false,
-			isToPEG: true
+			isToPEG: true,
+			poolPEG: null,
+			poolETH: null
 		};
 		fetch(
 			"https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD&api_key=5617820d3ec69aedb8b334b97dd61d4f19cfc097b5a7ce37fc870c6419cc8bba"
@@ -42,14 +46,14 @@ export default class Home extends Component {
 		this.setState({
 			valPEG:
 				Math.round(x.target.value * this.state.conversion * 100) / 100,
-			ethVal: Math.round(x.target.value * 10000) / 10000
+			valETH: Math.round(x.target.value * 10000) / 10000
 		});
 	};
 
 	onUpdateUSD = x => {
 		this.setState({
 			valPEG: Math.round(x.target.value * 100) / 100,
-			ethVal:
+			valETH:
 				Math.round((x.target.value * 10000) / this.state.conversion) /
 				10000
 		});
@@ -61,8 +65,39 @@ export default class Home extends Component {
 		});
 	};
 
+	setPoolSizes = value => {
+		console.log(this.state);
+		this.setState({
+			poolETH:
+				value.balanceETH
+					.div(
+						ethers.utils
+							.bigNumberify(10)
+							.pow(ethers.utils.bigNumberify(13))
+					)
+					.toNumber() / Math.pow(10, 5),
+			poolPEG:
+				value.balancePEG
+					.div(
+						ethers.utils
+							.bigNumberify(10)
+							.pow(ethers.utils.bigNumberify(16))
+					)
+					.toNumber() / Math.pow(10, 2)
+		});
+		console.log(this.state);
+	};
+
 	render() {
-		const { ethVal, valPEG, transactionActive, isToPEG } = this.state;
+		const {
+			valETH,
+			valPEG,
+			transactionActive,
+			isToPEG,
+			poolETH,
+			poolPEG
+		} = this.state;
+
 		return (
 			<Content>
 				<Grid centered verticalAlign="middle" className="home-content">
@@ -75,6 +110,55 @@ export default class Home extends Component {
 							{context => {
 								if (!context.active) {
 									context.setFirstValidConnector(["Infura"]);
+								} else if (!(poolETH && poolPEG)) {
+									let pegABI = [
+										{
+											constant: true,
+											inputs: [],
+											name: "getPoolBalances",
+											outputs: [
+												{
+													name: "balanceETH",
+													type: "uint256"
+												},
+												{
+													name: "balancePEG",
+													type: "uint256"
+												}
+											],
+											payable: false,
+											stateMutability: "view",
+											type: "function"
+										},
+										{
+											constant: true,
+											inputs: [],
+											name: "getPriceETH_USD",
+											outputs: [
+												{
+													name: "priceETH_USD",
+													type: "uint256"
+												}
+											],
+											payable: false,
+											stateMutability: "view",
+											type: "function"
+										}
+									];
+
+									let PEG = new ethers.Contract(
+										"0x3f3dba7a14269f5df35b63bfde72a8c713dc5fee",
+										pegABI,
+										context.library
+									);
+
+									PEG.getPoolBalances().then(
+										this.setPoolSizes
+									);
+									PEG.getPriceETH_USD().then(value => {
+										console.log(value);
+										window.oracle = value;
+									});
 								}
 								window.reth = context;
 								window.ethers = ethers;
@@ -90,7 +174,7 @@ export default class Home extends Component {
 													step={0.001}
 													value={
 														Math.round(
-															ethVal * 10000
+															valETH * 10000
 														) / 10000
 													}
 													onInput={this.onUpdateETH}
@@ -144,29 +228,63 @@ export default class Home extends Component {
 												PEG to ETH
 											</Button>
 										</Button.Group>
-										<Segment.Group>
-											<Segment
-												color="green"
-												loading={!context.active}
-											>
-												{`${
-													context.connectorName
-														? "Connected with " +
-														  (context.connectorName ===
-														  "MetaMask"
-																? "an Injected Web3 Provider"
-																: "Infura")
-														: "Connecting to blockchain..."
-												} `}
-												<Icon name="check" />
-											</Segment>
-										</Segment.Group>
+										{/* <Segment.Group> */}
+										<Segment
+											color="green"
+											loading={!context.active}
+										>
+											{`${
+												context.connectorName
+													? "Connected with " +
+													  (context.connectorName ===
+													  "MetaMask"
+															? "an Injected Web3 Provider"
+															: "Infura")
+													: "Connecting to blockchain..."
+											} `}
+											<Icon name="check" />
+										</Segment>
+										{poolPEG && (
+											<Container>
+												<Divider horizontal>
+													Pool Statistics
+												</Divider>
+												<Statistic.Group
+													size="small"
+													widths={2}
+												>
+													<Statistic>
+														<Statistic.Value>
+															{Math.round(
+																poolETH * 100
+															) / 100}
+														</Statistic.Value>
+														<Statistic.Label>
+															ETH
+														</Statistic.Label>
+													</Statistic>
+													<Statistic>
+														<Statistic.Value>
+															{Math.round(
+																poolPEG
+															)}
+														</Statistic.Value>
+														<Statistic.Label>
+															PEG
+														</Statistic.Label>
+													</Statistic>
+												</Statistic.Group>
+											</Container>
+										)}
+										{/* </Segment.Group> */}
 										<Divider />
 										<ModalAboutPEG />
 										{transactionActive && (
 											<ModalTransaction
 												valPEG={valPEG}
-												ethVal={ethVal}
+												valETH={valETH}
+												poolETH={poolETH}
+												poolPEG={poolPEG}
 												isToPEG={isToPEG}
 												hide={this.hideTransationModal}
 											/>

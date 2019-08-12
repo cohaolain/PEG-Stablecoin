@@ -25,7 +25,7 @@ export default function ModalTransaction(props) {
 	const [validPrivateKey, changeValidPrivateKey] = useState(false);
 	const [transactionHash, changeTransactionHash] = useState(null);
 	const [errorState, setErrorState] = useState(null);
-	const { hide, isToPEG, valPEG, ethVal } = props;
+	const { hide, isToPEG, valPEG, valETH, poolPEG, poolETH } = props;
 
 	const context = useWeb3Context();
 
@@ -149,7 +149,7 @@ export default function ModalTransaction(props) {
 		try {
 			if (isToPEG) {
 				window.transactionPromise = PEG.getPEG({
-					value: ethers.utils.parseEther(ethVal.toString())
+					value: ethers.utils.parseEther(valETH.toString())
 				})
 					.then(transaction => {
 						window.transaction = transaction;
@@ -317,9 +317,9 @@ export default function ModalTransaction(props) {
 							</Segment>
 							<Segment>
 								{`You'll be converting ${
-									isToPEG ? ethVal + " ETH" : valPEG + " PEG"
+									isToPEG ? valETH + " ETH" : valPEG + " PEG"
 								} to roughly ${
-									!isToPEG ? ethVal + " ETH" : valPEG + " PEG"
+									!isToPEG ? valETH + " ETH" : valPEG + " PEG"
 								}.`}
 							</Segment>
 						</Segment.Group>
@@ -350,10 +350,10 @@ export default function ModalTransaction(props) {
 					)}
 
 					<Divider horizontal>Transaction Details</Divider>
-					<Statistic.Group widths="three">
+					<Statistic.Group size="tiny" widths="three">
 						<Statistic>
 							<Statistic.Value>
-								{isToPEG ? ethVal : valPEG}
+								{isToPEG ? valETH : valPEG}
 							</Statistic.Value>
 							<Statistic.Label>
 								{isToPEG ? "ETH" : "PEG"}
@@ -369,7 +369,17 @@ export default function ModalTransaction(props) {
 
 						<Statistic>
 							<Statistic.Value>
-								{!isToPEG ? ethVal : valPEG}
+								{!isToPEG
+									? Math.round(
+											(valPEG / (valPEG + poolPEG)) *
+												poolETH *
+												Math.pow(10, 5)
+									  ) / Math.pow(10, 5)
+									: Math.round(
+											(valETH / (valETH + poolETH)) *
+												poolPEG *
+												Math.pow(10, 2)
+									  ) / Math.pow(10, 2)}
 							</Statistic.Value>
 							<Statistic.Label>
 								{!isToPEG ? "ETH" : "PEG"}

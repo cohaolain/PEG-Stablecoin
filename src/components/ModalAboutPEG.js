@@ -48,8 +48,8 @@ export default class ModalAboutPEG extends Component {
 				key: "what-do-i-do",
 				title: "So what do I do?",
 				content: [
-					"If you send Ether to pegstablecoin.eth you will automatically get back PEG,",
-					"and if you send PEG you will automatically get back Ether."
+					"If you send Ether to pegstablecoin.eth (with sufficient gas, 40000 normally, ~60000 once per hour max),",
+					"you will automatically get back PEG, and if you send PEG you will automatically get back Ether."
 				].join(" ")
 			}
 		];

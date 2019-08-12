@@ -36,21 +36,20 @@ export default class Navigation extends Component {
 					active={activeItem === "Pool Exchange"}
 					onClick={this.handleItemClick}
 				/>
-				{/* <Menu.Item
+				<Menu.Item
 					as={Link}
 					to="/how_it_works"
 					name="How It Works"
 					active={activeItem === "How It Works"}
 					onClick={this.handleItemClick}
-				/> 
-				<Menu.Item
+				/>
+				{/* <Menu.Item
 					as={Link}
 					to="/docs"
 					name="API Docs"
 					active={activeItem === "API Docs"}
 					onClick={this.handleItemClick}
-				/>
-				*/}
+				/> */}
 			</>
 		);
 		const smartContract = (
