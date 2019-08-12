@@ -398,10 +398,7 @@ export default function ModalTransaction(props) {
 							disabled={!transactionHash}
 							rel="noopener noreferrer"
 							color="green"
-							href={
-								"https://ropsten.etherscan.io/tx/" +
-								transactionHash
-							}
+							href={"https://etherscan.io/tx/" + transactionHash}
 						>
 							<Icon name="external" />
 							View on EtherScan
