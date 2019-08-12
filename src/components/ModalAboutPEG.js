@@ -97,10 +97,9 @@ export default class ModalAboutPEG extends Component {
 									<Card.Meta>Creator</Card.Meta>
 									<Card.Description>
 										Dr Phil Maguire is a lecturer in the
-										Computer Science Department in Maynooth
+										Computer Science Department at Maynooth
 										University, and head of the BSc in
-										Computational Thinking undergraduate
-										course.
+										Computational Thinking programme.
 									</Card.Description>
 								</Card.Content>
 							</Card>
@@ -114,10 +113,10 @@ export default class ModalAboutPEG extends Component {
 									<Card.Header>Ciarán Ó hAoláin</Card.Header>
 									<Card.Meta>Developer</Card.Meta>
 									<Card.Description>
-										Ciarán Ó hAoláin is a student Maynooth
-										University currently in his final year
-										of studies for his BSc in Computational
-										Thinking.
+										Ciarán Ó hAoláin is a student at
+										Maynooth University currently in his
+										final year of studies for his BSc in
+										Computational Thinking.
 									</Card.Description>
 								</Card.Content>
 							</Card>

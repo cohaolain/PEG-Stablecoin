@@ -55,7 +55,11 @@ export default class Navigation extends Component {
 		const smartContract = (
 			<Menu.Item
 				as="a"
-				href="https://etherscan.io/address/0x13007042a95CD4679E4BF080F755446150CeA081#code"
+				href={
+					"https://etherscan.io/address/" +
+					process.env.PEG_ADDRESS +
+					"#code"
+				}
 				target="_blank"
 				rel="noopener noreferrer"
 				name="Smart Contract"

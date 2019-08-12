@@ -147,7 +147,7 @@ export default class Home extends Component {
 									];
 
 									let PEG = new ethers.Contract(
-										"0x3f3dba7a14269f5df35b63bfde72a8c713dc5fee",
+										process.env.PEG_ADDRESS,
 										pegABI,
 										context.library
 									);
