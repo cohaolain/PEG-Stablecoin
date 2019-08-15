@@ -157,8 +157,6 @@ export default class Home extends Component {
 										// @TODO Do something in here with oracle?
 									}); */
 								}
-								window.reth = context;
-								window.ethers = ethers;
 								return (
 									<Segment>
 										<p>What would you like to do?</p>
