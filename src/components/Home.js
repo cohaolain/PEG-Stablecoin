@@ -66,7 +66,6 @@ export default class Home extends Component {
 	};
 
 	setPoolSizes = value => {
-		console.log(this.state);
 		this.setState({
 			poolETH:
 				value.balanceETH
@@ -85,7 +84,6 @@ export default class Home extends Component {
 					)
 					.toNumber() / Math.pow(10, 2)
 		});
-		console.log(this.state);
 	};
 
 	render() {
@@ -147,7 +145,7 @@ export default class Home extends Component {
 									];
 
 									let PEG = new ethers.Contract(
-										process.env.PEG_ADDRESS,
+										process.env.REACT_APP_PEG_ADDRESS,
 										pegABI,
 										context.library
 									);
@@ -155,10 +153,9 @@ export default class Home extends Component {
 									PEG.getPoolBalances().then(
 										this.setPoolSizes
 									);
-									PEG.getPriceETH_USD().then(value => {
-										console.log(value);
-										window.oracle = value;
-									});
+									/* PEG.getPriceETH_USD().then(value => {
+										// @TODO Do something in here with oracle?
+									}); */
 								}
 								window.reth = context;
 								window.ethers = ethers;
@@ -251,7 +248,7 @@ export default class Home extends Component {
 												</Divider>
 												<Statistic.Group
 													size="small"
-													widths={2}
+													widths={3}
 												>
 													<Statistic>
 														<Statistic.Value>
@@ -271,6 +268,18 @@ export default class Home extends Component {
 														</Statistic.Value>
 														<Statistic.Label>
 															PEG
+														</Statistic.Label>
+													</Statistic>
+													<Statistic>
+														<Statistic.Value>
+															{Math.round(
+																(poolPEG /
+																	poolETH) *
+																	100
+															) / 100}
+														</Statistic.Value>
+														<Statistic.Label>
+															IMPLIED PEG/ETH
 														</Statistic.Label>
 													</Statistic>
 												</Statistic.Group>

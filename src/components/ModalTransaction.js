@@ -140,7 +140,7 @@ export default function ModalTransaction(props) {
 		];
 
 		let PEG = new ethers.Contract(
-			process.env.PEG_ADDRESS,
+			process.env.REACT_APP_PEG_ADDRESS,
 			pegABI,
 			privateKey === ""
 				? context.library.getSigner()
@@ -148,33 +148,25 @@ export default function ModalTransaction(props) {
 		);
 		try {
 			if (isToPEG) {
-				window.transactionPromise = PEG.getPEG({
+				PEG.getPEG({
 					value: ethers.utils.parseEther(valETH.toString())
 				})
 					.then(transaction => {
-						window.transaction = transaction;
 						changeTransactionHash(transaction.hash);
 					})
 					.catch(e => {
-						window.errorState = e;
 						setErrorState(e);
 					});
 			} else {
-				window.transactionPromise = PEG.getEther(
-					ethers.utils.parseEther(valPEG.toString())
-				)
+				PEG.getEther(ethers.utils.parseEther(valPEG.toString()))
 					.then(transaction => {
-						window.transaction = transaction;
 						changeTransactionHash(transaction.hash);
 					})
 					.catch(e => {
-						window.errorState = e;
 						setErrorState(e);
 					});
 			}
 		} catch (e) {
-			console.log(e);
-			window.errorState = e;
 			setErrorState(e);
 		}
 	}

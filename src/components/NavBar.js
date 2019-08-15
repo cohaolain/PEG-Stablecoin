@@ -57,7 +57,7 @@ export default class Navigation extends Component {
 				as="a"
 				href={
 					"https://etherscan.io/address/" +
-					process.env.PEG_ADDRESS +
+					process.env.REACT_APP_PEG_ADDRESS +
 					"#code"
 				}
 				target="_blank"
