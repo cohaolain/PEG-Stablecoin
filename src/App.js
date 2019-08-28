@@ -25,7 +25,8 @@ const connectors = { MetaMask, Infura };
 ReactGA.initialize("UA-127395003-3", {
 	gaOptions: {
 		siteSpeedSampleRate: 100
-	}
+	},
+	testMode: process.NODE_ENV === "test"
 });
 
 var updateLocation = location => {
