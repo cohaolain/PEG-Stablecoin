@@ -2,4 +2,20 @@ language: node_js
 node_js:
   - node
 
-cache: yarn
+cache:
+  directories:
+  - node_modules
+
+script:
+  - yarn test
+  - yarn build
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  local_dir: build
+  committer_from_gh: true
+  on:
+    branch: master
