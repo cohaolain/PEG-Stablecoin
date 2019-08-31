@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import { Divider, Icon, Input, Menu, Sidebar } from "semantic-ui-react";
+import { Divider, Icon, Menu, Sidebar } from "semantic-ui-react";
 
 import { BrowserView, MobileView } from "react-device-detect";
 

@@ -10,7 +10,6 @@ import {
 	Segment,
 	Step,
 	Message,
-	Transition,
 	Statistic
 } from "semantic-ui-react";
 
@@ -20,7 +19,6 @@ import { ethers } from "ethers";
 export default function ModalTransaction(props) {
 	const [triedInit, changeTriedInit] = useState(false);
 	const [transactionSent, changetransactionSent] = useState(false);
-	const [transactionComplete, changetransactionComplete] = useState(false);
 	const [privateKey, changePrivateKey] = useState("");
 	const [validPrivateKey, changeValidPrivateKey] = useState(false);
 	const [transactionHash, changeTransactionHash] = useState(null);
