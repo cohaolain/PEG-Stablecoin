@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/cohaolain/PEG-Stablecoin.svg?branch=master)](https://travis-ci.com/cohaolain/PEG-Stablecoin)
+[![Build Status](https://travis-ci.com/PEG-Stablecoin/PEG-Stablecoin.svg?branch=master)](https://travis-ci.com/PEG-Stablecoin/PEG-Stablecoin)
 
 This is the repository for the [PEG Stablecoin website](https://pegstablecoin.com).
 
