@@ -153,9 +153,6 @@ export default class Home extends Component {
 									PEG.getPoolBalances().then(
 										this.setPoolSizes
 									);
-									/* PEG.getPriceETH_USD().then(value => {
-										// @TODO Do something in here with oracle?
-									}); */
 								}
 								return (
 									<Segment>
@@ -223,7 +220,6 @@ export default class Home extends Component {
 												PEG to ETH
 											</Button>
 										</Button.Group>
-										{/* <Segment.Group> */}
 										<Segment
 											color="green"
 											loading={!context.active}
@@ -277,13 +273,12 @@ export default class Home extends Component {
 															) / 100}
 														</Statistic.Value>
 														<Statistic.Label>
-															IMPLIED PEG/ETH
+															IMPLIED $/ETH
 														</Statistic.Label>
 													</Statistic>
 												</Statistic.Group>
 											</Container>
 										)}
-										{/* </Segment.Group> */}
 										<Divider />
 										<ModalAboutPEG />
 										{transactionActive && (
