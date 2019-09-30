@@ -44,8 +44,7 @@ export default class Home extends Component {
 
 	onUpdateETH = x => {
 		this.setState({
-			valPEG:
-				Math.round(x.target.value * this.state.conversion * 100) / 100,
+			valPEG: Math.round(x.target.value * this.state.conversion * 100) / 100,
 			valETH: Math.round(x.target.value * 10000) / 10000
 		});
 	};
@@ -54,8 +53,7 @@ export default class Home extends Component {
 		this.setState({
 			valPEG: Math.round(x.target.value * 100) / 100,
 			valETH:
-				Math.round((x.target.value * 10000) / this.state.conversion) /
-				10000
+				Math.round((x.target.value * 10000) / this.state.conversion) / 10000
 		});
 	};
 
@@ -69,19 +67,11 @@ export default class Home extends Component {
 		this.setState({
 			poolETH:
 				value.balanceETH
-					.div(
-						ethers.utils
-							.bigNumberify(10)
-							.pow(ethers.utils.bigNumberify(13))
-					)
+					.div(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(13)))
 					.toNumber() / Math.pow(10, 5),
 			poolPEG:
 				value.balancePEG
-					.div(
-						ethers.utils
-							.bigNumberify(10)
-							.pow(ethers.utils.bigNumberify(16))
-					)
+					.div(ethers.utils.bigNumberify(10).pow(ethers.utils.bigNumberify(16)))
 					.toNumber() / Math.pow(10, 2)
 		});
 	};
@@ -150,9 +140,7 @@ export default class Home extends Component {
 										context.library
 									);
 
-									PEG.getPoolBalances().then(
-										this.setPoolSizes
-									);
+									PEG.getPoolBalances().then(this.setPoolSizes);
 								}
 								return (
 									<Segment>
@@ -164,21 +152,13 @@ export default class Home extends Component {
 													label="Amount of ETH"
 													type="number"
 													step={0.001}
-													value={
-														Math.round(
-															valETH * 10000
-														) / 10000
-													}
+													value={Math.round(valETH * 10000) / 10000}
 													onInput={this.onUpdateETH}
 												/>
 												<Form.Input
 													label="Amount of PEG"
 													type="number"
-													value={
-														Math.round(
-															valPEG * 100
-														) / 100
-													}
+													value={Math.round(valPEG * 100) / 100}
 													onInput={this.onUpdateUSD}
 												/>
 											</Form.Group>
@@ -190,10 +170,7 @@ export default class Home extends Component {
 														transactionActive: true,
 														isToPEG: true
 													});
-													if (
-														context.connectorName !==
-														"MetaMask"
-													) {
+													if (context.connectorName !== "MetaMask") {
 														context.unsetConnector();
 													}
 												}}
@@ -208,10 +185,7 @@ export default class Home extends Component {
 														transactionActive: true,
 														isToPEG: false
 													});
-													if (
-														context.connectorName !==
-														"MetaMask"
-													) {
+													if (context.connectorName !== "MetaMask") {
 														context.unsetConnector();
 													}
 												}}
@@ -220,15 +194,11 @@ export default class Home extends Component {
 												PEG to ETH
 											</Button>
 										</Button.Group>
-										<Segment
-											color="green"
-											loading={!context.active}
-										>
+										<Segment color="green" loading={!context.active}>
 											{`${
 												context.connectorName
 													? "Connected with " +
-													  (context.connectorName ===
-													  "MetaMask"
+													  (context.connectorName === "MetaMask"
 															? "an Injected Web3 Provider"
 															: "Infura")
 													: "Connecting to blockchain..."
@@ -237,46 +207,40 @@ export default class Home extends Component {
 										</Segment>
 										{poolPEG && (
 											<Container>
-												<Divider horizontal>
-													Pool Statistics
-												</Divider>
-												<Statistic.Group
-													size="small"
-													widths={3}
-												>
+												<Divider horizontal>Pool Statistics</Divider>
+												<Statistic.Group size="small" widths={3}>
 													<Statistic>
 														<Statistic.Value>
-															{Math.round(
-																poolETH * 100
-															) / 100}
+															{Math.round(poolETH * 100) / 100}
 														</Statistic.Value>
-														<Statistic.Label>
-															ETH
-														</Statistic.Label>
+														<Statistic.Label>ETH</Statistic.Label>
 													</Statistic>
 													<Statistic>
 														<Statistic.Value>
-															{Math.round(
-																poolPEG
-															)}
+															{Math.round(poolPEG)}
 														</Statistic.Value>
-														<Statistic.Label>
-															PEG
-														</Statistic.Label>
+														<Statistic.Label>PEG</Statistic.Label>
 													</Statistic>
 													<Statistic>
 														<Statistic.Value>
-															{Math.round(
-																(poolPEG /
-																	poolETH) *
-																	100
-															) / 100}
+															{Math.round((poolPEG / poolETH) * 100) / 100}
 														</Statistic.Value>
-														<Statistic.Label>
-															IMPLIED $/ETH
-														</Statistic.Label>
+														<Statistic.Label>IMPLIED $/ETH</Statistic.Label>
 													</Statistic>
 												</Statistic.Group>
+												<Segment>
+													Address:
+													<a
+														href={`https://etherscan.io/token/${process.env.REACT_APP_PEG_ADDRESS}`}
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														{` ${process.env.REACT_APP_PEG_ADDRESS.substr(
+															0,
+															16
+														)}...`}
+													</a>
+												</Segment>
 											</Container>
 										)}
 										<Divider />
