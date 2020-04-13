@@ -1,0 +1,142 @@
+{
+	"author": "Ciarán Ó hAoláin",
+	"details": "Defines an ERC20 token which manages the PEG token and its ETH pool",
+	"methods": {
+		"allowance(address,address)": {
+			"details": "Get the amount of tokens approved by an address `owner` for use by `spender`",
+			"params": {
+				"owner": "The address owner whose tokens we want to verify approval for",
+				"spender": "The address of the potentially approved spender"
+			},
+			"returns": {
+				"allowancePEG": "the amount of PEG `spender` is approved to transfer on behalf of `owner`"
+			}
+		},
+		"approve(address,uint256)": {
+			"details": "Token owner can approve for `spender` to `transferFrom(...)` `tokens` from the token owner's account",
+			"params": {
+				"spender": "Address to authorise to spend tokens on your behalf",
+				"tokens": "Quantity of tokens to authorise for spending"
+			},
+			"returns": {
+				"success": "true if approval is successful"
+			}
+		},
+		"approveAndCall(address,uint256,bytes)": {
+			"details": "Token owner can approve for `spender` to transferFrom(...) `tokens` from the token owner's account. The `spender` contract function `receiveApproval(...)` is then executed",
+			"params": {
+				"data": "The function call data provided to `spender.receiveApproval()`",
+				"spender": "The contract address to be approved",
+				"tokens": "The number of tokens the caller is approving for `spender` to use"
+			},
+			"returns": {
+				"success": "true if call is successful"
+			}
+		},
+		"balanceOf(address)": {
+			"details": "Get the PEG balance of a given address",
+			"params": {
+				"owner": "The address to find the PEG balance of"
+			},
+			"returns": {
+				"balance": "PEG balance of owner"
+			}
+		},
+		"burn(uint256)": {
+			"details": "Burn PEG Tokens",
+			"params": {
+				"tokens": "Quantity of tokens to burn"
+			},
+			"returns": {
+				"success": "true if burn is successful"
+			}
+		},
+		"constructor": {
+			"details": "Contract constructor which accepts no parameters",
+			"params": {
+				"medianiserAddress": "address of the medianiser contract"
+			}
+		},
+		"getEther(uint256)": {
+			"details": "Provides the caller with Ether in return for PEG",
+			"params": {
+				"amountGivenPEG": "the quantity of PEG you want to exchange for Ether"
+			},
+			"returns": {
+				"amountReceivedEther": "the amount of Ether received by the caller",
+				"success": "true if the transaction was successful"
+			}
+		},
+		"getNextPriceAdjustmentTime()": {
+			"details": "Gets the seconds until the next price adjustment",
+			"returns": {
+				"nextPriceAdjustmentTime": "seconds to next price adjustment, or 0 if this will take place after the next conversion transaction"
+			}
+		},
+		"getOraclePriceETH_USD()": {
+			"details": "Gets the current ETH_USD exchange rate, according to the MakerDAO Oracle",
+			"returns": {
+				"priceETH_USD": "the current ETH_USD exchange rate",
+				"priceIsValid": "true if oracle says it has a value"
+			}
+		},
+		"getPEG()": {
+			"details": "Provides the caller with PEG in return for Ether",
+			"returns": {
+				"amountReceivedPEG": "the amount of PEG received by the caller",
+				"success": "true if the transaction is successful"
+			}
+		},
+		"getPoolBalances()": {
+			"details": "Get the quantity of Ether and PEG in the pools",
+			"returns": {
+				"balanceETH": "the amount of Ether in the pool",
+				"balancePEG": "the amount of PEG in the pool"
+			}
+		},
+		"inflateEtherPool()": {
+			"details": "Increase the size of the ETH pool WITHOUT GAINING ANYTHING",
+			"returns": {
+				"success": "true if the transaction is successful"
+			}
+		},
+		"totalSupply()": {
+			"details": "Get the current total supply of PEG tokens",
+			"returns": {
+				"_0": "total supply of PEG tokens"
+			}
+		},
+		"transfer(address,uint256)": {
+			"details": "Transfer PEG tokens from a user to another user. Doesn't allow transfers to 0x0 address (use burn())",
+			"params": {
+				"to": "Address to send tokens to",
+				"tokens": "Quantity of tokens to send"
+			},
+			"returns": {
+				"success": "true if transfer is successful"
+			}
+		},
+		"transferAnyERC20Token(address,uint256)": {
+			"details": "Allows the contract owner to withdraw wasted tokens",
+			"params": {
+				"tokenAddress": "the contract address of the token to be transferred",
+				"tokens": "the quantity of tokens to be transferred"
+			},
+			"returns": {
+				"success": "true if the transaction is successful"
+			}
+		},
+		"transferFrom(address,address,uint256)": {
+			"details": "Transfer `tokens` from the `from` account to the `to` account. Caller must be approved to spend these funds. Can't be to the PEG contract (for conversion).",
+			"params": {
+				"from": "Address to transfer tokens from",
+				"to": "Address tokens will be transferred to. Can't be the PEG contract's address",
+				"tokens": "Quantity of tokens to transfer (must be approvedd by `to` address)"
+			},
+			"returns": {
+				"success": "true if approval is successful"
+			}
+		}
+	},
+	"title": "PEG Stable Coin"
+}
