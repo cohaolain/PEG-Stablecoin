@@ -14,7 +14,7 @@ export default class Navigation extends Component {
 				: window.location.href.includes("doc")
 				? "API Docs"
 				: "Pool Exchange",
-			sidebarVisible: false
+			sidebarVisible: false,
 		};
 	}
 
@@ -43,13 +43,13 @@ export default class Navigation extends Component {
 					active={activeItem === "How It Works"}
 					onClick={this.handleItemClick}
 				/>
-				{/* <Menu.Item
+				<Menu.Item
 					as={Link}
 					to="/docs"
 					name="API Docs"
 					active={activeItem === "API Docs"}
 					onClick={this.handleItemClick}
-				/> */}
+				/>
 			</>
 		);
 		const smartContract = (
@@ -91,7 +91,7 @@ export default class Navigation extends Component {
 							position="left"
 							onClick={() =>
 								this.setState({
-									sidebarVisible: !sidebarVisible
+									sidebarVisible: !sidebarVisible,
 								})
 							}
 						>
@@ -110,7 +110,7 @@ export default class Navigation extends Component {
 							vertical
 							onHide={() =>
 								this.setState({
-									sidebarVisible: !sidebarVisible
+									sidebarVisible: !sidebarVisible,
 								})
 							}
 							visible={sidebarVisible}
