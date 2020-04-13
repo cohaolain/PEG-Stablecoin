@@ -1,6 +1,18 @@
-[![Build Status](https://travis-ci.com/PEG-Stablecoin/PEG-Stablecoin.svg?branch=master)](https://travis-ci.com/PEG-Stablecoin/PEG-Stablecoin)
-
 This is the repository for the [PEG Stablecoin website](https://pegstablecoin.com).
+
+## Requirements
+
+In order to build this website yourself, you need `yarn`.
+These instructions assume you are developing on Linux.
+You can set this up by running the following at the root of this repository:
+```bash
+sudo apt install npm
+sudo npm install -g yarn
+```
+Then you can install all dependencies of this project with the line:
+```bash
+yarn install
+```
 
 ## Available Scripts
 
