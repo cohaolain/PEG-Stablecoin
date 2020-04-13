@@ -8,7 +8,7 @@ import {
 	Header,
 	Icon,
 	Image,
-	Modal
+	Modal,
 } from "semantic-ui-react";
 
 import { Link } from "react-router-dom";
@@ -34,24 +34,27 @@ export default class ModalAboutPEG extends Component {
 				key: "what-is-peg",
 				title: "What is PEG?",
 				content: [
-					"PEG is a decentralized dollar-pegged stablecoin that allows you to switch from Ether into PEG and vice versa.",
-					"This is achieved in a single transaction and there are no fees."
-				].join(" ")
+					"PEG is a decentralized dollar-pegged stablecoin that allows you to easily exchange ETH for PEG and vice versa.",
+					"This is achieved in a single transaction and there are no fees.",
+				].join(" "),
 			},
 			{
 				key: "how-it-does-it",
 				title: "How does it do it?",
-				content:
-					"The PEG smart contract automatically adjusts the size of the pool to maintain the peg."
+				content: [
+					"The PEG smart contract's effective exchange rate changes depending on a number of factors.",
+					"Check out the 'How It Works' page for more information.",
+				].join(" "),
 			},
 			{
 				key: "what-do-i-do",
 				title: "So what do I do?",
 				content: [
-					"If you send Ether to pegstablecoin.eth (with sufficient gas, 40000 normally, ~60000 once per hour max),",
-					"you will automatically get back PEG, and if you send PEG you will automatically get back Ether."
-				].join(" ")
-			}
+					"You can use this website as an interface allowing you exchange PEG for ETH and vice versa.",
+					"Alternatively, you can send ETH or PEG directly to the contract.",
+					"You will then receive your exchanged currency back automatically.",
+				].join(" "),
+			},
 		];
 		return (
 			<Modal
@@ -60,7 +63,7 @@ export default class ModalAboutPEG extends Component {
 						color="blue"
 						onClick={() =>
 							this.setState({
-								showModal: true
+								showModal: true,
 							})
 						}
 					>
@@ -133,7 +136,7 @@ export default class ModalAboutPEG extends Component {
 						to="/how_it_works"
 						onClick={() =>
 							this.setState({
-								showModal: false
+								showModal: false,
 							})
 						}
 					>
