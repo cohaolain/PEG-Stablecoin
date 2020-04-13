@@ -272,10 +272,9 @@ export default class Home extends Component {
 													<Statistic>
 														<Statistic.Value>
 															{Math.round(
-																(poolPEG /
-																	poolETH) *
-																	100
-															) / 100}
+																poolPEG /
+																	poolETH
+															)}
 														</Statistic.Value>
 														<Statistic.Label>
 															IMPLIED $/ETH
