@@ -248,6 +248,9 @@ export default class Home extends Component {
 												<Statistic.Group
 													size="small"
 													widths={3}
+													style={{
+														flexWrap: "nowrap",
+													}}
 												>
 													<Statistic>
 														<Statistic.Value>
