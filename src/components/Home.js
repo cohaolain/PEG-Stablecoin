@@ -287,7 +287,7 @@ export default class Home extends Component {
 												<Segment>
 													Address:
 													<a
-														href={`https://etherscan.io/token/${process.env.REACT_APP_PEG_ADDRESS}`}
+														href={`${process.env.REACT_APP_ETHERSCAN_URL}/token/${process.env.REACT_APP_PEG_ADDRESS}`}
 														target="_blank"
 														rel="noopener noreferrer"
 													>

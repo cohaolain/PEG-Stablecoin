@@ -388,7 +388,7 @@ export default function ModalTransaction(props) {
 							disabled={!transactionHash}
 							rel="noopener noreferrer"
 							color="green"
-							href={"https://etherscan.io/tx/" + transactionHash}
+							href={`${process.env.REACT_APP_ETHERSCAN_URL}/tx/${transactionHash}`}
 						>
 							<Icon name="external" />
 							View on EtherScan

@@ -56,9 +56,8 @@ export default class Navigation extends Component {
 			<Menu.Item
 				as="a"
 				href={
-					"https://etherscan.io/token/" +
-					process.env.REACT_APP_PEG_ADDRESS +
-					"#code"
+					`${process.env.REACT_APP_ETHERSCAN_URL}/token/` +
+					`${process.env.REACT_APP_PEG_ADDRESS}#code`
 				}
 				target="_blank"
 				rel="noopener noreferrer"
